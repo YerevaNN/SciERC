@@ -26,10 +26,7 @@ Part of the codebase is extended from [lsgn](https://github.com/luheng/lsgn) and
 ## Setting up for ELMo (in progress)
 * Some of our models are trained with the [ELMo embeddings](https://allennlp.org/elmo). We use the ELMo model loaded by [tensorflow_hub](https://www.tensorflow.org/hub/modules/google/elmo/1).
 * It is recommended to cache ELMo embeddings for training and validating efficiency. Please modify the corresponding filenames and run
-
-`python generate_elmo.py `
-
-to generate ELMo embeddings.
+`python generate_elmo.py ` to generate ELMo embeddings.
 
 
 ## Training Instructions
