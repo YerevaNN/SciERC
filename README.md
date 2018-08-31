@@ -19,7 +19,7 @@ Part of the codebase is extended from [lsgn](https://github.com/luheng/lsgn) and
 * pyhocon (for parsing the configurations)
 * tensorflow_hub (for ELMo)
 
-* [GloVe](https://nlp.stanford.edu/projects/glove/) embeddings and the [srlconll](http://www.lsi.upc.edu/~srlconll/soft.html) scripts:  
+* [GloVe](https://nlp.stanford.edu/projects/glove/) embeddings and downloading data:  
 `./scripts/fetch_required_data.sh` 
 * Build kernels: `./scripts/build_custom_kernels.sh` (Please make adjustments to the script based on your OS/gcc version)
 * Download [pretrained models](https://drive.google.com/drive/u/0/folders/1TPpXx1-0TDL-hcMDa0b6fwmvn2HIp-yk). Please extract the models into `./logs`. Git-lfs support will be coming soon.
