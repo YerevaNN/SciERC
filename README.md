@@ -50,7 +50,6 @@ Part of the codebase is extended from [lsgn](https://github.com/luheng/lsgn) and
 
 ## Making Predictions with Pretrained Models
 * Define the output path in experiments.conf as output_path, the system will output the results of eval_path to output_path. The output file is also a json file, which has thesame format as eval_path. Then run
-
 `python write_single.py <experiment>`
 
 ## Best Models ##
