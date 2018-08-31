@@ -1,7 +1,7 @@
 # SciIE (Under Construction)
 
 This repository contains code and models for replicating results from the following publication:
-* [Multi-Task Identification of Entities, Relations, and Coreference for  Scientific Knowledge Graph Construction](EMNLP, 2018)
+* [Multi-Task Identification of Entities, Relations, and Coreference for  Scientific Knowledge Graph Construction](https://arxiv.org/pdf/1808.09602.pdf)(EMNLP, 2018)
 * [Yi Luan](http://ssli.ee.washington.edu/~luanyi/), [Luheng He](https://homes.cs.washington.edu/~luheng), [Mari Ostendorf](https://ssli.ee.washington.edu/people/mo/), [Hannaneh Hajishirzi](https://homes.cs.washington.edu/~hannaneh/)
 * In EMNLP 2018
 
