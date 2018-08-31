@@ -1,29 +1,59 @@
-# README #
+# SciIE (Under Construction)
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This repository contains code and models for replicating results from the following publication:
+* [Multi-Task Identification of Entities, Relations, and Coreference for  Scientific Knowledge Graph Construction](EMNLP, 2018)
+* [Yi Luan](http://ssli.ee.washington.edu/~luanyi/), [Luheng He](https://homes.cs.washington.edu/~luheng), [Mari Ostendorf](https://ssli.ee.washington.edu/people/mo/), [Hannaneh Hajishirzi](https://homes.cs.washington.edu/~hannaneh/)
+* In EMNLP 2018
 
-### What is this repository for? ###
+Part of the codebase is extended from [lsgn](https://github.com/luheng/lsgn) and [e2e-coref](https://github.com/kentonl/e2e-coref). 
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+### Requirements
+* Python 2.7
+  * TensorFlow 1.8.0
+  * pyhocon (for parsing the configurations)
+  * [tensorflow_hub](https://www.tensorflow.org/hub/) (for loading ELMo)
 
-### How do I get set up? ###
+## Getting Started
+* Python 2.7
+* TensorFlow 1.8.0
+* pyhocon (for parsing the configurations)
+* tensorflow_hub (for ELMo)
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+* [GloVe](https://nlp.stanford.edu/projects/glove/) embeddings and the [srlconll](http://www.lsi.upc.edu/~srlconll/soft.html) scripts:  
+`./scripts/fetch_required_data.sh` 
+* Build kernels: `./scripts/build_custom_kernels.sh` (Please make adjustments to the script based on your OS/gcc version)
+* Download [pretrained models](https://drive.google.com/drive/u/0/folders/1TPpXx1-0TDL-hcMDa0b6fwmvn2HIp-yk). Please extract the models into `./logs`. Git-lfs support will be coming soon.
 
-### Contribution guidelines ###
+## Setting up for ELMo (in progress)
+* Some of our models are trained with the [ELMo embeddings](https://allennlp.org/elmo). We use the ELMo model loaded by [tensorflow_hub](https://www.tensorflow.org/hub/modules/google/elmo/1).
+* It is recommended to cache ELMo embeddings for training and validating efficiency. Please modify the corresponding filenames and run
 
-* Writing tests
-* Code review
-* Other guidelines
+`python generate_elmo.py `
 
-### Who do I talk to? ###
+to generate ELMo embeddings.
 
-* Repo owner or admin
-* Other community or team contact
+
+## Training Instructions
+
+* Experiment configurations are found in `experiments.conf`
+* Choose an experiment that you would like to run, e.g. `scientific_best_ner`
+* For a single-machine experiment, run the following two commands:
+  * `python singleton.py <experiment>`
+  * `python evaluator.py <experiment>`
+* Results are stored in the `logs` directory and can be viewed via TensorBoard.
+* For final evaluation of the checkpoint with the maximum dev F1:
+  * Run `python test_single.py <experiment>` for the single-model evaluation. For example: `python test_single.py scientific_best_ner`
+
+## Other Quirks
+
+* It does not use GPUs by default. Instead, it looks for the `GPU` environment variable, which the code treats as shorthand for `CUDA_VISIBLE_DEVICES`.
+* The evaluator should not be run on GPUs, since evaluating full documents does not fit within GPU memory constraints.
+* The training runs indefinitely and needs to be terminated manually. The model generally converges at about 300k steps and within 48 hours.
+
+## Making Predictions with Pretrained Models
+* Define the output path in experiments.conf as output_path, the system will output the results of eval_path to output_path. The output file is also a json file, which has thesame format as eval_path. Then run
+
+`python write_single.py <experiment>`
+
+## Best Models ##
+* Best models can be downloaded from here ([Best NER Model](http://nlp.cs.washington.edu/sciIE/models/scientific_best_ner.zip),[Best Coref Model](http://nlp.cs.washington.edu/sciIE/models/scientific_best_coref.zip),[Best Relation Model](http://nlp.cs.washington.edu/sciIE/models/scientific_best_relation.zip)), unzip and put the model under ./logs . For making predictings use the same command as the previous step.
