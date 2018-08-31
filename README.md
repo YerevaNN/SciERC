@@ -36,6 +36,8 @@ to generate ELMo embeddings.
 ## Training Instructions
 
 * Experiment configurations are found in `experiments.conf`
+* The parameter `main_metrics` can be selected from coref, ner, relation or any combination of the three, such as coref_ner_relation and indicates the F1 score for single task or averaged F1 score for multi-task. The model is tuned and saved based on the tasks the parameter specifies.
+* The parameters `ner_weight`, `coref_weight` and `relation_weight` are weights for the multi-task objective. If set the weight to 0 then the task is not trained.
 * Choose an experiment that you would like to run, e.g. `scientific_best_ner`
 * For a single-machine experiment, run the following two commands:
   * `python singleton.py <experiment>`
