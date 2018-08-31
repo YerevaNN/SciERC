@@ -56,4 +56,4 @@ to generate ELMo embeddings.
 `python write_single.py <experiment>`
 
 ## Best Models ##
-* Best models can be downloaded from here ([Best NER Model](http://nlp.cs.washington.edu/sciIE/models/scientific_best_ner.zip),[Best Coref Model](http://nlp.cs.washington.edu/sciIE/models/scientific_best_coref.zip),[Best Relation Model](http://nlp.cs.washington.edu/sciIE/models/scientific_best_relation.zip)), unzip and put the model under ./logs . For making predictings use the same command as the previous step.
+* Best models can be downloaded from here ([Best NER Model](http://nlp.cs.washington.edu/sciIE/models/scientific_best_ner.zip),[Best Coref Model](http://nlp.cs.washington.edu/sciIE/models/scientific_best_coref.zip),[Best Relation Model](http://nlp.cs.washington.edu/sciIE/models/scientific_best_relation.zip)), unzip and put the model under ./logs . For making predictings or testing results use the same command as the previous steps.
