@@ -60,8 +60,8 @@ lm_emb_op = tf.concat([
         tf.concat([word_emb, word_emb], 2),  # [B, slen, 1024, 1]
         tf.expand_dims(lm_embeddings["lstm_outputs1"], 3),
         tf.expand_dims(lm_embeddings["lstm_outputs2"], 3)], 3)  # [B, slen, 1024, 3]
-fn = './data/processed_data/elmo/train.hdf5'
-outfn = './data/processed_data/elmo/train.hdf5'
+fn = './data/processed_data/json/dev.json'
+outfn = './data/processed_data/elmo/dev.hdf5'
 Elmo(fn, outfn)
           
 
