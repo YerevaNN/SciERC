@@ -46,7 +46,7 @@ Part of the codebase is extended from [lsgn](https://github.com/luheng/lsgn) and
 
 * It does not use GPUs by default. Instead, it looks for the `GPU` environment variable, which the code treats as shorthand for `CUDA_VISIBLE_DEVICES`.
 * The evaluator should not be run on GPUs, since evaluating full documents does not fit within GPU memory constraints.
-* The training runs indefinitely and needs to be terminated manually. The model generally converges at about 300k steps and within 48 hours.
+* The training runs indefinitely and needs to be terminated manually. 
 
 ## Making Predictions with Pretrained Models
 * Define the output path in experiments.conf as output_path, the system will output the results of eval_path to output_path. The output file is also a json file, which has thesame format as eval_path. Then run
