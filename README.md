@@ -36,7 +36,7 @@ Part of the codebase is extended from [lsgn](https://github.com/luheng/lsgn) and
 * The parameters `ner_weight`, `coref_weight` and `relation_weight` are weights for the multi-task objective. If set the weight to 0 then the task is not trained.
 * Choose an experiment that you would like to run, e.g. `scientific_best_ner`
 
-* For a single-machine experiment, run the following two commands:
+* For a single-machine experiment, run the following two commands in parallel:
 	* `python singleton.py <experiment>`
 	* `python evaluator.py <experiment>`
 
