@@ -38,11 +38,8 @@ Part of the codebase is extended from [lsgn](https://github.com/luheng/lsgn) and
 
 * For a single-machine experiment, run the following two commands:
 	* `python singleton.py <experiment>`
+	* `python evaluator.py <experiment>`
 
-* For a single-machine experiment, run the following two commands:
-        * `python singleton.py <experiment>`
-        * `python evaluator.py <experiment>`
-   
 * Results are stored in the `logs` directory and can be viewed via TensorBoard.
 * For final evaluation of the checkpoint with the maximum dev F1:
   * Run `python test_single.py <experiment>` for evaluating the pre-trained model. For example: `python test_single.py scientific_best_ner`
