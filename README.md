@@ -36,9 +36,8 @@ Part of the codebase is extended from [lsgn](https://github.com/luheng/lsgn) and
 * The parameters `ner_weight`, `coref_weight` and `relation_weight` are weights for the multi-task objective. If set the weight to 0 then the task is not trained.
 * Choose an experiment that you would like to run, e.g. `scientific_best_ner`
 * For a single-machine experiment, run the following two commands:
-
-   `python singleton.py <experiment>`
-   `python evaluator.py <experiment>`
+  *`python singleton.py <experiment>`
+  *`python evaluator.py <experiment>`
    
 * Results are stored in the `logs` directory and can be viewed via TensorBoard.
 * For final evaluation of the checkpoint with the maximum dev F1:
