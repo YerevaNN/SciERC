@@ -35,9 +35,9 @@ Part of the codebase is extended from [lsgn](https://github.com/luheng/lsgn) and
 * The parameter `main_metrics` can be selected from coref, ner, relation or any combination of the three, such as coref_ner_relation and indicates the F1 score for weightedaveraged F1 score for multiple tasks. The model is tuned and saved based on the resulting F1 score.
 * The parameters `ner_weight`, `coref_weight` and `relation_weight` are weights for the multi-task objective. If set the weight to 0 then the task is not trained.
 * Choose an experiment that you would like to run, e.g. `scientific_best_ner`
-+ For a single-machine experiment, run the following two commands:
-  *`python singleton.py <experiment>`
-  *`python evaluator.py <experiment>`
+* For a single-machine experiment, run the following two commands:
+  * `python singleton.py <experiment>`
+  * `python evaluator.py <experiment>`
    
 * Results are stored in the `logs` directory and can be viewed via TensorBoard.
 * For final evaluation of the checkpoint with the maximum dev F1:
