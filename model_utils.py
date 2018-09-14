@@ -374,24 +374,21 @@ def get_dense_span_labels(span_starts, span_ends, span_labels, num_spans, max_se
       validate_indices = False)  # [num_sentences, max_sent_len, max_sent_len]
   return dense_labels
     
-
-def get_rel_softmax_loss(rel_scores, rel_labels, num_predicted_args, num_predicted_preds):
+def get_rel_softmax_loss(rel_scores, rel_labels, num_predicted_entities):
   """Softmax loss with 2-D masking.
   Args:
-    srl_scores: [num_sentences, max_num_args, max_num_preds, num_labels]
-    srl_labels: [num_sentences, max_num_args, max_num_preds]
-    num_predicted_args: [num_sentences]
-    num_predicted_preds: [num_sentences]
+    rel_scores: [num_sentences, max_num_entities, max_num_entities, num_labels]
+    rel_labels: [num_sentences, max_num_entities, max_num_entities]
+    num_predicted_entities: [num_sentences]
   """
-  max_num_args = util.shape(rel_scores, 1)
-  max_num_preds = util.shape(rel_scores, 2)
+  max_num_entities = util.shape(rel_scores, 1)
   num_labels = util.shape(rel_scores, 3)
-  args_mask = tf.sequence_mask(num_predicted_args, max_num_args)  # [num_sentences, max_num_args]
-  preds_mask = tf.sequence_mask(num_predicted_preds, max_num_preds)  # [num_sentences, max_num_preds]
+  entities_mask = tf.sequence_mask(num_predicted_entities, max_num_entities)  # [num_sentences, max_num_entities]
+
   rel_loss_mask = tf.logical_and(
-      tf.expand_dims(args_mask, 2),  # [num_sentences, max_num_args, 1]
-      tf.expand_dims(preds_mask, 1)  # [num_sentences, 1, max_num_preds]
-  )  # [num_sentences, max_num_args, max_num_preds]
+      tf.expand_dims(entities_mask, 2),  # [num_sentences, max_num_entities, 1]
+      tf.expand_dims(entities_mask, 1)  # [num_sentences, 1, max_num_entities]
+  )  # [num_sentences, max_num_entities, max_num_entities]
   loss = tf.nn.sparse_softmax_cross_entropy_with_logits(
       labels=tf.reshape(rel_labels, [-1]),
       logits=tf.reshape(rel_scores, [-1, num_labels]),
@@ -400,6 +397,32 @@ def get_rel_softmax_loss(rel_scores, rel_labels, num_predicted_args, num_predict
   loss.set_shape([None])
   loss = tf.reduce_sum(loss)
   return loss
+
+# def get_rel_softmax_loss(rel_scores, rel_labels, num_predicted_args, num_predicted_preds):
+#   """Softmax loss with 2-D masking.
+#   Args:
+#     srl_scores: [num_sentences, max_num_args, max_num_preds, num_labels]
+#     srl_labels: [num_sentences, max_num_args, max_num_preds]
+#     num_predicted_args: [num_sentences]
+#     num_predicted_preds: [num_sentences]
+#   """
+#   max_num_args = util.shape(rel_scores, 1)
+#   max_num_preds = util.shape(rel_scores, 2)
+#   num_labels = util.shape(rel_scores, 3)
+#   args_mask = tf.sequence_mask(num_predicted_args, max_num_args)  # [num_sentences, max_num_args]
+#   preds_mask = tf.sequence_mask(num_predicted_preds, max_num_preds)  # [num_sentences, max_num_preds]
+#   rel_loss_mask = tf.logical_and(
+#       tf.expand_dims(args_mask, 2),  # [num_sentences, max_num_args, 1]
+#       tf.expand_dims(preds_mask, 1)  # [num_sentences, 1, max_num_preds]
+#   )  # [num_sentences, max_num_args, max_num_preds]
+#   loss = tf.nn.sparse_softmax_cross_entropy_with_logits(
+#       labels=tf.reshape(rel_labels, [-1]),
+#       logits=tf.reshape(rel_scores, [-1, num_labels]),
+#       name="srl_softmax_loss")  # [num_sentences * max_num_args * max_num_preds]
+#   loss = tf.boolean_mask(loss, tf.reshape(rel_loss_mask, [-1]))
+#   loss.set_shape([None])
+#   loss = tf.reduce_sum(loss)
+#   return loss
 
 # def get_srl_softmax_loss(srl_scores, srl_labels, num_predicted_args, num_predicted_preds):
 #   """Softmax loss with 2-D masking.

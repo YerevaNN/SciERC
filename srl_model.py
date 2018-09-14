@@ -192,7 +192,7 @@ class SRLModel(object):
           entity_emb, entity_scores, len(self.data.rel_labels), self.config, self.dropout
       )  # [num_sentences, max_num_ents, max_num_ents, num_labels]
       rel_loss = get_rel_softmax_loss(
-          rel_scores, rel_labels, num_entities, num_entities)  # [num_sentences, max_num_ents, max_num_ents]
+          rel_scores, rel_labels, num_entities)  # [num_sentences, max_num_ents, max_num_ents]
       predict_dict.update({
         "candidate_entity_scores": candidate_entity_scores,
         "entity_starts": entity_starts,
