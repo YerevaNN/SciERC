@@ -2,6 +2,8 @@ import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
+import argparse
+
 import tensorflow as tf
 import tensorflow_hub as hub
 import h5py
@@ -45,7 +47,10 @@ def Elmo(fn, outfn):
 
 
 #### Model #####
-
+parser = argparse.ArgumentParser()
+parser.add_argument('--input', required=True)
+parser.add_argument('--output', required=True)
+args = parser.parse_args()
 
 set_gpus(0)
 elmo = hub.Module("https://tfhub.dev/google/elmo/1", trainable=True)
@@ -59,15 +64,12 @@ lm_embeddings = elmo(
         "tokens": sentences,
         "sequence_len": text_len
     },
-        signature="tokens", as_dict=True)
+    signature="tokens", as_dict=True)
 
 word_emb = tf.expand_dims(lm_embeddings["word_emb"], 3)  # [B, slen, 512]
 lm_emb_op = tf.concat([
-        tf.concat([word_emb, word_emb], 2),  # [B, slen, 1024, 1]
-        tf.expand_dims(lm_embeddings["lstm_outputs1"], 3),
-        tf.expand_dims(lm_embeddings["lstm_outputs2"], 3)], 3)  # [B, slen, 1024, 3]
-fn = '../1.0alpha4.test.scierc.json'
-outfn = '../1.0alpha4.test.scierc.elmo.hdf5'
-Elmo(fn, outfn)
-          
+    tf.concat([word_emb, word_emb], 2),  # [B, slen, 1024, 1]
+    tf.expand_dims(lm_embeddings["lstm_outputs1"], 3),
+    tf.expand_dims(lm_embeddings["lstm_outputs2"], 3)], 3)  # [B, slen, 1024, 3]
 
+Elmo(args.input, args.output)
