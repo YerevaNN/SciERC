@@ -93,5 +93,5 @@ def print_report(metrics, targets, digits=2):
     report.append(fmt % tuple(line))
     report.append('\n')
 
-    print(''.join(report))
+    print((''.join(report)))
 

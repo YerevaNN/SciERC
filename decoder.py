@@ -20,7 +20,7 @@ if __name__ == "__main__":
   name = sys.argv[1]
   output_filename = sys.argv[2]
 
-  print "Running experiment: {}.".format(name)
+  print("Running experiment: {}.".format(name))
   config = util.get_config("experiments.conf")[name]
   config["log_dir"] = util.mkdirs(os.path.join(config["log_root"], name))
 
@@ -41,9 +41,9 @@ if __name__ == "__main__":
       #for example_num, (tensorized_example, example) in enumerate(model.eval_data):
       for i, doc_tensors in enumerate(model.eval_tensors):
         #feed_dict = {i:t for i,t in zip(model.input_tensors, tensorized_example)}
-        feed_dict = dict(zip(
+        feed_dict = dict(list(zip(
             model.input_tensors,
-            [input_utils.pad_batch_tensors(doc_tensors, tn) for tn in model.input_names + model.label_names]))
+            [input_utils.pad_batch_tensors(doc_tensors, tn) for tn in model.input_names + model.label_names])))
 
         predict_names = []
         for tn in model.predict_names:
@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
         predict_tensors = [model.predictions[tn] for tn in predict_names] + [model.loss]
         predict_tensors = session.run(predict_tensors, feed_dict=feed_dict)
-        predict_dict = dict(zip(predict_names + ["loss"], predict_tensors))
+        predict_dict = dict(list(zip(predict_names + ["loss"], predict_tensors)))
 
         #_, _, _, mention_starts, mention_ends, antecedents, antecedent_scores, head_scores = session.run(model.predictions + [model.head_scores], feed_dict=feed_dict)
         doc_example = model.coref_eval_data[i]
@@ -68,7 +68,7 @@ if __name__ == "__main__":
           
         mention_starts = predict_dict["mention_starts"]
         mention_ends = predict_dict["mention_ends"]
-        doc_example["top_spans"] = zip((int(i) for i in mention_starts), (int(i) for i in mention_ends))
+        doc_example["top_spans"] = list(zip((int(i) for i in mention_starts), (int(i) for i in mention_ends)))
         doc_example["head_scores"] = predict_dict["coref_head_scores"].tolist()
 
         # SRL and NER stuff. Maybe flatten to doc level.
@@ -88,5 +88,5 @@ if __name__ == "__main__":
         f.write("\n")
 
         if (i + 1) % 10 == 0:
-          print "Decoded {} examples.".format(i + 1)
+          print("Decoded {} examples.".format(i + 1))
           #break

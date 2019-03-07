@@ -4,7 +4,7 @@ import pdb
 
 def tensorize_labeled_spans(tuples, label_dict):
   if len(tuples) > 0:
-    starts, ends, labels = zip(*tuples)
+    starts, ends, labels = list(zip(*tuples))
   else:
     starts, ends, labels = [], [], []
 
@@ -23,7 +23,7 @@ def tensorize_srl_relations(tuples, label_dict, filter_v_args):
     filtered_tuples = [t for t in tuples if t[-1] != "V"]
     # filtered_tuples = tuples
   if len(filtered_tuples) > 0:
-    heads, starts, ends, labels = zip(*filtered_tuples)
+    heads, starts, ends, labels = list(zip(*filtered_tuples))
   else:
     heads, starts, ends, labels = [], [], [], []
   return (np.array(heads), np.array(starts), np.array(ends),
@@ -39,7 +39,7 @@ def tensorize_entity_relations(tuples, label_dict, filter_reverse):
     else:
       filtered_tuples.append(t)
   if len(filtered_tuples) > 0:
-    s1, e1, s2, e2, labels = zip(*filtered_tuples)
+    s1, e1, s2, e2, labels = list(zip(*filtered_tuples))
   else:
     s1, e1, s2, e2, labels = [], [], [], [], []
   return (np.array(s1), np.array(e1), np.array(s2), np.array(e2),
@@ -48,7 +48,7 @@ def tensorize_entity_relations(tuples, label_dict, filter_reverse):
 
 def get_all_predicates(tuples):
   if len(tuples) > 0:
-    predicates, _, _, _ = zip(*tuples)
+    predicates, _, _, _ = list(zip(*tuples))
   else:
     predicates = []
   return np.unique(predicates)
@@ -85,10 +85,10 @@ def pad_batch_tensors(tensor_dicts, tensor_name):
   tensors = [np.expand_dims(td[tensor_name], 0) for td in tensor_dicts]
   shapes = [t.shape for t in tensors] 
   # Take max shape along each dimension.
-  max_shape = np.max(zip(*shapes), axis=1)
+  max_shape = np.max(list(zip(*shapes)), axis=1)
   #print tensor_name, batch_size, tensors[0].shape, max_shape
   zeros = np.zeros_like(max_shape)
-  padded_tensors = [np.pad(t, zip(zeros, max_shape - t.shape), "constant") for t in tensors]
+  padded_tensors = [np.pad(t, list(zip(zeros, max_shape - t.shape)), "constant") for t in tensors]
   return np.concatenate(padded_tensors, axis=0)
 
 

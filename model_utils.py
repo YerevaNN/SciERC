@@ -45,7 +45,7 @@ def batch_gather(emb, indices):
 def lstm_contextualize(text_emb, text_len, config, lstm_dropout):
   num_sentences = tf.shape(text_emb)[0]
   current_inputs = text_emb  # [num_sentences, max_sentence_length, emb]
-  for layer in xrange(config["contextualization_layers"]):
+  for layer in range(config["contextualization_layers"]):
     with tf.variable_scope("layer_{}".format(layer)):
       with tf.variable_scope("fw_cell"):
         cell_fw = util.CustomLSTMCell(config["contextualization_size"], num_sentences, lstm_dropout)

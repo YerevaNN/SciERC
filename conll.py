@@ -17,7 +17,7 @@ def get_doc_key(doc_id, part):
 
 def output_conll(input_file, output_file, predictions):
   prediction_map = {}
-  for doc_key, clusters in predictions.items():
+  for doc_key, clusters in list(predictions.items()):
     start_map = collections.defaultdict(list)
     end_map = collections.defaultdict(list)
     word_map = collections.defaultdict(list)
@@ -28,9 +28,9 @@ def output_conll(input_file, output_file, predictions):
         else:
           start_map[start].append((cluster_id, end))
           end_map[end].append((cluster_id, start))
-    for k,v in start_map.items():
+    for k,v in list(start_map.items()):
       start_map[k] = [cluster_id for cluster_id, end in sorted(v, key=operator.itemgetter(1), reverse=True)]
-    for k,v in end_map.items():
+    for k,v in list(end_map.items()):
       end_map[k] = [cluster_id for cluster_id, start in sorted(v, key=operator.itemgetter(1), reverse=True)]
     prediction_map[doc_key] = (start_map, end_map, word_map)
 
@@ -76,11 +76,11 @@ def official_conll_eval(gold_path, predicted_path, metric, official_stdout=False
   process.wait()
 
   if stderr is not None:
-    print stderr
+    print(stderr)
 
   if official_stdout:
-    print "Official result for {}".format(metric)
-    print stdout
+    print("Official result for {}".format(metric))
+    print(stdout)
 
   coref_results_match = re.match(COREF_RESULTS_REGEX, stdout)
   recall = float(coref_results_match.group(1))
@@ -92,5 +92,5 @@ def evaluate_conll(gold_path, predictions, official_stdout=False):
   with tempfile.NamedTemporaryFile(delete=False) as prediction_file:
     with open(gold_path, "r") as gold_file:
       output_conll(gold_file, prediction_file, predictions)
-    print("Predicted conll file: {}".format(prediction_file.name))
+    print(("Predicted conll file: {}".format(prediction_file.name)))
   return { m: official_conll_eval(gold_file.name, prediction_file.name, m, official_stdout) for m in ("muc", "bcub", "ceafe") }

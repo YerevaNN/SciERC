@@ -20,7 +20,7 @@ def dp_decode_test():
   }
 
   pred_to_args, _ = dp_decode(predict_dict, srl_labels_inv)
-  print pred_to_args
+  print(pred_to_args)
 
 
 if __name__ == "__main__":

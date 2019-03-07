@@ -68,16 +68,16 @@ class LSGNEvaluator(object):
     srl_sent_id = 0
 
     for i, doc_tensors in enumerate(self.eval_tensors):
-      feed_dict = dict(zip(
+      feed_dict = dict(list(zip(
           data.input_tensors,
-          [pad_batch_tensors(doc_tensors, tn) for tn in data.input_names + data.label_names]))
+          [pad_batch_tensors(doc_tensors, tn) for tn in data.input_names + data.label_names])))
       predict_names = []
       for tn in data.predict_names:
         if tn in predictions:
           predict_names.append(tn)
       predict_tensors = [predictions[tn] for tn in predict_names] + [loss]
       predict_tensors = session.run(predict_tensors, feed_dict=feed_dict)
-      predict_dict = dict(zip(predict_names + ["loss"], predict_tensors))
+      predict_dict = dict(list(zip(predict_names + ["loss"], predict_tensors)))
 
       doc_size = len(doc_tensors)
       doc_example = self.coref_eval_data[i]
@@ -127,14 +127,14 @@ class LSGNEvaluator(object):
 
       total_loss += predict_dict["loss"]
       if (i + 1) % 50 == 0:
-        print ("Evaluated {}/{} documents.".format(i + 1, len(self.coref_eval_data)))
+        print(("Evaluated {}/{} documents.".format(i + 1, len(self.coref_eval_data))))
 
     debug_printer.close()
     summary_dict = {}
     task_to_f1 = {}  # From task name to F1.
     elapsed_time = time.time() - start_time
 
-    sentences, gold_srl, gold_ner, gold_relations = zip(*self.eval_data)
+    sentences, gold_srl, gold_ner, gold_relations = list(zip(*self.eval_data))
 
     # Summarize results.
     if self.config["relation_weight"] > 0:
@@ -144,13 +144,13 @@ class LSGNEvaluator(object):
       summary_dict["Relation F1"] = f1
       summary_dict["Relation precision"] = precision
       summary_dict["Relation recall"] = recall
-      for k, evaluator in sorted(entity_evaluators.items(), key=operator.itemgetter(0)):
+      for k, evaluator in sorted(list(entity_evaluators.items()), key=operator.itemgetter(0)):
         tags = ["{} {} @ {}".format("Entities", t, _k_to_tag(k)) for t in ("R", "P", "F")]
         results_to_print = []
         for t, v in zip(tags, evaluator.metrics()):
           results_to_print.append("{:<10}: {:.4f}".format(t, v))
           summary_dict[t] = v
-        print ", ".join(results_to_print)
+        print(", ".join(results_to_print))
   
 
     if self.config["ner_weight"] > 0:
@@ -179,32 +179,32 @@ class LSGNEvaluator(object):
 
       p,r,f = coref_evaluator.get_prf()
       summary_dict["Average Coref F1 (py)"] = f
-      print "Average F1 (py): {:.2f}%".format(f * 100)
+      print("Average F1 (py): {:.2f}%".format(f * 100))
       summary_dict["Average Coref precision (py)"] = p
-      print "Average precision (py): {:.2f}%".format(p * 100)
+      print("Average precision (py): {:.2f}%".format(p * 100))
       summary_dict["Average Coref recall (py)"] = r
-      print "Average recall (py): {:.2f}%".format(r * 100)
+      print("Average recall (py): {:.2f}%".format(r * 100))
 
       task_to_f1["coref"] = f * 100  # coref_conll_f1
-      for k, evaluator in sorted(mention_evaluators.items(), key=operator.itemgetter(0)):
+      for k, evaluator in sorted(list(mention_evaluators.items()), key=operator.itemgetter(0)):
         tags = ["{} {} @ {}".format("Mentions", t, _k_to_tag(k)) for t in ("R", "P", "F")]
         results_to_print = []
         for t, v in zip(tags, evaluator.metrics()):
           results_to_print.append("{:<10}: {:.4f}".format(t, v))
           summary_dict[t] = v
-        print ", ".join(results_to_print)
+        print(", ".join(results_to_print))
 
     summary_dict["Dev Loss"] = total_loss / len(self.coref_eval_data)
 
-    print "Decoding took {}.".format(str(datetime.timedelta(seconds=int(elapsed_time))))
-    print "Decoding speed: {}/document, or {}/sentence.".format(
+    print("Decoding took {}.".format(str(datetime.timedelta(seconds=int(elapsed_time)))))
+    print("Decoding speed: {}/document, or {}/sentence.".format(
         str(datetime.timedelta(seconds=int(elapsed_time / len(self.coref_eval_data)))),
         str(datetime.timedelta(seconds=int(elapsed_time / len(self.eval_data))))
-    )
+    ))
 
     metric_names = self.config["main_metrics"].split("_")
     main_metric = sum([task_to_f1[t] for t in metric_names]) / len(metric_names)
-    print "Combined metric ({}): {}".format(self.config["main_metrics"], main_metric)
+    print("Combined metric ({}): {}".format(self.config["main_metrics"], main_metric))
 
     return util.make_summary(summary_dict), main_metric, task_to_f1
 

@@ -1,9 +1,13 @@
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
+
 import tensorflow as tf
 import tensorflow_hub as hub
 import h5py
 import numpy as np
 import json
-print tf.__version__
+print((tf.__version__))
 from util import set_gpus
 def Elmo(fn, outfn):
       with open(fn) as f:
@@ -20,7 +24,7 @@ def Elmo(fn, outfn):
                   #for line in fin:
                   for i in range(len(sents)):
                         if i % 100 == 0:
-                              print 'Finished ' + str(i)
+                              print(('Finished ' + str(i)))
                         doc = sents[i]
                         docid = docids[i]
                         for j in range(len(doc)):
@@ -48,6 +52,8 @@ elmo = hub.Module("https://tfhub.dev/google/elmo/1", trainable=True)
 sentences = tf.placeholder('string', shape=(None, None))
 text_len = tf.placeholder('int32', shape=(None))
 
+print("READY TO PARSE ELMO")
+
 lm_embeddings = elmo(
     inputs={
         "tokens": sentences,
@@ -60,8 +66,8 @@ lm_emb_op = tf.concat([
         tf.concat([word_emb, word_emb], 2),  # [B, slen, 1024, 1]
         tf.expand_dims(lm_embeddings["lstm_outputs1"], 3),
         tf.expand_dims(lm_embeddings["lstm_outputs2"], 3)], 3)  # [B, slen, 1024, 3]
-fn = './data/processed_data/json/dev.json'
-outfn = './data/processed_data/elmo/dev.hdf5'
+fn = '../1.0alpha4.test.scierc.json'
+outfn = '../1.0alpha4.test.scierc.elmo.hdf5'
 Elmo(fn, outfn)
           
 

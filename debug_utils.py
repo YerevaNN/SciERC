@@ -18,7 +18,7 @@ def srl_constraint_tracker(pred_to_args):
   unique_core_role_violations = 0
   continuation_role_violations = 0
   reference_role_violations = 0
-  for pred_ids, args in pred_to_args.iteritems():
+  for pred_ids, args in pred_to_args.items():
     # Sort by span start, assuming they are not overlapping.
     sorted_args = sorted(args, key=lambda x: x[0], reverse=True)
     core_args = set()
@@ -61,7 +61,7 @@ def print_sentence_to_conll(fout, tokens, labels, head_scores, raw_head_scores=N
 class DebugPrinter():
   def __init__(self):
     debug_filename = "/tmp/srl_debug_%d" % os.getpid()
-    print ("Writing debugging info to: {}".format(debug_filename))
+    print(("Writing debugging info to: {}".format(debug_filename)))
     self.fout = codecs.open(debug_filename, "w", "utf-8")
 
   def print_sentence(self, gold, pred_to_args, ner, constituency, head_scores, coref_head_scores=None):
@@ -70,9 +70,9 @@ class DebugPrinter():
     span_head_scores = [[0.0 for _ in words] for _ in range(len(pred_to_args))]
 
     if coref_head_scores is not None:
-      raw_head_scores = zip(head_scores, coref_head_scores)
+      raw_head_scores = list(zip(head_scores, coref_head_scores))
     else:
-      raw_head_scores = zip(head_scores)
+      raw_head_scores = list(zip(head_scores))
 
     # Write predicted SRL.
     for i, pred_id in enumerate(sorted(pred_to_args.keys())):
@@ -148,7 +148,7 @@ class DebugPrinter():
 
       self.fout.write(" ".join(words) + "\n")
       # Print SRL information.
-      for pred, args in srl_predictions[i].iteritems():
+      for pred, args in srl_predictions[i].items():
         #print pred, args
         self.fout.write("{}:".format(words[pred]) + "\n")
         for arg in args:
@@ -178,7 +178,7 @@ class DebugPrinter():
                               predicates, pred_scores, srl_scores, pred_to_args):
     self.fout.write(" ".join(words) + "\n")
     args_to_preds = {}
-    for pred, args in pred_to_args.iteritems():
+    for pred, args in pred_to_args.items():
       for start, end, label in args:
         arg = (start, end)
         if not arg in args_to_preds: args_to_preds[arg] = []

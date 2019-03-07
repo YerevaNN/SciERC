@@ -92,10 +92,10 @@ def GetRel(true_docs, gold_docs,aspect):
 
                 if span0 in nerdir and nerdir[span0] == aspect:
                     key = True
-                    print phrase1
+                    print(phrase1)
                 if span1 in nerdir and nerdir[span1] == aspect:
                     key = True
-                    print phrase2
+                    print(phrase2)
                 if key:
                     # pdb.set_trace()
                     # print phrase1 + '\t' + rel + '\t' + phrase2
@@ -120,16 +120,16 @@ def GetRelSpan(true_docs, gold_docs,aspect):
 
                 if span0 in nerdir and nerdir[span0] == aspect:
                     key = True
-                    print phrase1
+                    print(phrase1)
                 if span1 in nerdir and nerdir[span1] == aspect:
                     key = True
-                    print phrase2
+                    print(phrase2)
 
                 
                 if doc_key == 'IJCAI_2016_413_abs':
                     # pdb.set_trace()
                     
-                    print phrase1 + '\t' + rel + '\t' + phrase2
+                    print(phrase1 + '\t' + rel + '\t' + phrase2)
 
                     if span0[0] > span1[0]:
                         span0, span1 = span1, span0
@@ -230,8 +230,8 @@ def PrintError(true_docs, gold_docs,aspect, trueset):
                 if key:
                     relation_token = doc_key + str(span0[0]) + '_' + str(span0[1]) +'_'+ doc_key + str(span1[0]) + '_' + str(span1[1]) +'_' +  rel
                     if relation_token not in trueset:
-                        print doc_key
-                        print phrase1 +'\t'+ phrase2 +'\t'+ rel
+                        print(doc_key)
+                        print(phrase1 +'\t'+ phrase2 +'\t'+ rel)
     return true_rels
 
 predfn = '/home/yiluan/lsgn_cleanup/dev.output_nocoref.json'

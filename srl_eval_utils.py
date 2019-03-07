@@ -56,13 +56,13 @@ def evaluate_retrieval(span_starts, span_ends, span_scores, pred_starts, pred_en
     gold_spans: Set of tuples of (start, end).
   """
   if len(span_starts) > 0:
-    sorted_starts, sorted_ends, sorted_scores = zip(*sorted(
+    sorted_starts, sorted_ends, sorted_scores = list(zip(*sorted(
         zip(span_starts, span_ends, span_scores),
-        key=operator.itemgetter(2), reverse=True))
+        key=operator.itemgetter(2), reverse=True)))
   else:
     sorted_starts = []
     sorted_ends = []
-  for k, evaluator in evaluators.items():
+  for k, evaluator in list(evaluators.items()):
     if k == -3:
       predicted_spans = set(zip(span_starts, span_ends)) & gold_spans
     else:
@@ -70,8 +70,8 @@ def evaluate_retrieval(span_starts, span_ends, span_scores, pred_starts, pred_en
         predicted_starts = pred_starts
         predicted_ends = pred_ends
         if debugging:
-          print "Predicted", zip(sorted_starts, sorted_ends, sorted_scores)[:len(gold_spans)]
-          print "Gold", gold_spans
+          print("Predicted", list(zip(sorted_starts, sorted_ends, sorted_scores))[:len(gold_spans)])
+          print("Gold", gold_spans)
      # FIXME: scalar index error
       elif k == 0:
         is_predicted = span_scores > 0
@@ -81,7 +81,7 @@ def evaluate_retrieval(span_starts, span_ends, span_scores, pred_starts, pred_en
         if k == -1:
           num_predictions = len(gold_spans)
         else:
-          num_predictions = (k * text_length) / 100
+          num_predictions = (k * text_length) // 100
         predicted_starts = sorted_starts[:num_predictions]
         predicted_ends = sorted_ends[:num_predictions]
       predicted_spans = set(zip(predicted_starts, predicted_ends))
@@ -92,7 +92,7 @@ def _print_f1(total_gold, total_predicted, total_matched, message=""):
   precision = 100.0 * total_matched / total_predicted if total_predicted > 0 else 0
   recall = 100.0 * total_matched / total_gold if total_gold > 0 else 0
   f1 = 2 * precision * recall / (precision + recall) if precision + recall > 0 else 0
-  print ("{}: Precision: {}, Recall: {}, F1: {}".format(message, precision, recall, f1))
+  print(("{}: Precision: {}, Recall: {}, F1: {}".format(message, precision, recall, f1)))
   return precision, recall, f1
 
 
@@ -196,7 +196,7 @@ def compute_srl_f1(sentences, gold_srl, predictions, srl_conll_eval_path):
     gold_rels = 0
     pred_rels = 0
     matched = 0
-    for pred_id, gold_args in gold.iteritems():
+    for pred_id, gold_args in gold.items():
       filtered_gold_args = [a for a in gold_args if a[2] not in ["V", "C-V"]]
       total_gold += len(filtered_gold_args)
       gold_rels += len(filtered_gold_args)
@@ -210,7 +210,7 @@ def compute_srl_f1(sentences, gold_srl, predictions, srl_conll_eval_path):
             if a0[2] == a1[2]:
               total_matched += 1
               matched += 1
-    for pred_id, args in prediction.iteritems():
+    for pred_id, args in prediction.items():
       filtered_args = [a for a in args if a[2] not in ["V"]] # "C-V"]] 
       total_predicted += len(filtered_args)
       pred_rels += len(filtered_args)
@@ -223,7 +223,7 @@ def compute_srl_f1(sentences, gold_srl, predictions, srl_conll_eval_path):
 
   # Prepare to compute official F1.
   if not srl_conll_eval_path:
-    print "No gold conll_eval data provided. Recreating ..."
+    print("No gold conll_eval data provided. Recreating ...")
     gold_path = "/tmp/srl_pred_%d.gold" % os.getpid()
     print_to_conll(sentences, gold_srl, gold_path, None)
     gold_predicates = None
@@ -250,8 +250,8 @@ def compute_srl_f1(sentences, gold_srl, predictions, srl_conll_eval_path):
       conll_f1 = 0
     print(eval_info)
     print(eval_info2)
-    print("Official CoNLL Precision={}, Recall={}, Fscore={}".format(
-        conll_precision, conll_recall, conll_f1))
+    print(("Official CoNLL Precision={}, Recall={}, Fscore={}".format(
+        conll_precision, conll_recall, conll_f1)))
   except IndexError:
     conll_recall = 0
     conll_precision = 0
@@ -360,5 +360,5 @@ def print_to_iob2(sentences, gold_ner, pred_ner, gold_file_path):
   child = subprocess.Popen('./ner/bin/conlleval < {}'.format(temp_file_path),
                            shell=True, stdout=subprocess.PIPE)
   eval_info = child.communicate()[0]
-  print eval_info
+  print(eval_info)
 

@@ -11,7 +11,7 @@ def decode_spans(span_starts, span_ends, span_scores, labels_inv):
   """
   pred_spans = []
   span_labels = np.argmax(span_scores, axis=1)  # [num_candidates]
-  spans_list = zip(span_starts, span_ends, span_labels, span_scores)
+  spans_list = list(zip(span_starts, span_ends, span_labels, span_scores))
   spans_list = sorted(spans_list, key=lambda x: x[3][x[2]], reverse=True)
   predicted_spans = {}
   for start, end, label, _ in spans_list:
@@ -104,7 +104,7 @@ def dp_decode(predict_dict, srl_labels_inv):
 
   for j, pred_id in enumerate(predicates):
     num_args = len(arg_starts)
-    args = zip(arg_starts, arg_ends, range(num_args))
+    args = list(zip(arg_starts, arg_ends, list(range(num_args))))
     args = sorted(args, key=lambda x: (x[0], x[1]))
     #print args
 
@@ -138,7 +138,7 @@ def dp_decode(predict_dict, srl_labels_inv):
         continue
       r0_str = srl_labels_inv[r0]
       # Enumerate explored states.
-      t_states = [t for t in states.keys() if t <= start]
+      t_states = [t for t in list(states.keys()) if t <= start]
       for t in t_states:
         role_states = states[t]
         # Update states if best role is not a core arg.
@@ -206,7 +206,7 @@ def get_predicted_clusters(top_span_starts, top_span_ends, predicted_antecedents
     mention_to_predicted[mention] = predicted_cluster
 
   predicted_clusters = [tuple(pc) for pc in predicted_clusters]
-  mention_to_predicted = { m:predicted_clusters[i] for m,i in mention_to_predicted.items() }
+  mention_to_predicted = { m:predicted_clusters[i] for m,i in list(mention_to_predicted.items()) }
 
   return predicted_clusters, mention_to_predicted
 
@@ -238,7 +238,7 @@ def _dp_decode_non_overlapping_spans(starts, ends, scores, max_len, labels_inv, 
                                      u_constraint=False):
   num_roles = scores.shape[1]
   labels = np.argmax(scores, axis=1)
-  spans = zip(starts, ends, range(len(starts)))
+  spans = list(zip(starts, ends, list(range(len(starts)))))
   spans = sorted(spans, key=lambda x: (x[0], x[1]))
 
   if u_constraint:
@@ -272,7 +272,7 @@ def _dp_decode_non_overlapping_spans(starts, ends, scores, max_len, labels_inv, 
       continue
     r0_str = labels_inv[r0]
     # Enumerate explored states.
-    t_states = [t for t in states.keys() if t <= start]
+    t_states = [t for t in list(states.keys()) if t <= start]
     for t in t_states:
       role_states = states[t]
       # Update states if best role is not a core arg.
@@ -338,7 +338,7 @@ def mtl_decode(sentences, predict_dict, ner_labels_inv, rel_labels_inv, config):
   
   # Document-level predictions. -1 means null antecedent.
   if "antecedent_scores" in predict_dict:
-    mention_spans = zip(predict_dict["mention_starts"], predict_dict["mention_ends"])
+    mention_spans = list(zip(predict_dict["mention_starts"], predict_dict["mention_ends"]))
     mention_to_predicted = {}
     predicted_clusters = []
 
@@ -378,7 +378,7 @@ def mtl_decode(sentences, predict_dict, ner_labels_inv, rel_labels_inv, config):
 
     predicted_clusters = [tuple(sorted(pc)) for pc in predicted_clusters]
     predictions["predicted_clusters"] = predicted_clusters
-    predictions["mention_to_predicted"] = { m:predicted_clusters[i] for m,i in mention_to_predicted.items() }
+    predictions["mention_to_predicted"] = { m:predicted_clusters[i] for m,i in list(mention_to_predicted.items()) }
 
   #print predictions["srl"]
   return predictions  

@@ -66,7 +66,7 @@ class LSGNData(object):
     self.lm_size = 0
     if config["lm_path"]:
       if "tfhub" in config["lm_path"]:
-        print "Using tensorflow hub:", config["lm_path"]
+        print(("Using tensorflow hub:", config["lm_path"]))
         self.lm_hub = hub.Module(config["lm_path"].encode("utf-8"), trainable=False) 
       else:
         self.lm_file = h5py.File(self.config["lm_path"], "r")
@@ -85,7 +85,7 @@ class LSGNData(object):
       if config["filter_reverse_relations"]:
         self.rel_labels_inv = [r for r in self.rel_labels_inv if "REVERSE" not in r]
       self.rel_labels = { l:i for i,l in enumerate(self.rel_labels_inv) }
-      print "Filtered relations:", self.rel_labels
+      print(("Filtered relations:", self.rel_labels))
     else:
       self.rel_labels = None
       self.rel_labels_inv = None
@@ -120,7 +120,7 @@ class LSGNData(object):
     self.label_names = _label_names
     self.predict_names = _predict_names
     self.batch_size = self.config["batch_size"]
-    dtypes, shapes = zip(*self.input_props)
+    dtypes, shapes = list(zip(*self.input_props))
     if self.batch_size > 0 and self.config["max_tokens_per_batch"] < 0:
       # Use fixed batch size if number of words per batch is not limited (-1).
       self.queue_input_tensors = [tf.placeholder(dtype, shape) for dtype, shape in self.input_props]
@@ -135,8 +135,8 @@ class LSGNData(object):
       self.enqueue_op = queue.enqueue(self.queue_input_tensors)
       self.input_tensors = queue.dequeue()
     num_features = len(self.input_names)
-    self.input_dict = dict(zip(self.input_names, self.input_tensors[:num_features]))
-    self.labels_dict = dict(zip(self.label_names, self.input_tensors[num_features:]))
+    self.input_dict = dict(list(zip(self.input_names, self.input_tensors[:num_features])))
+    self.labels_dict = dict(list(zip(self.label_names, self.input_tensors[num_features:])))
 
   def start_enqueue_thread(self, session):
     with open(self.config["train_path"], "r") as f:
@@ -160,8 +160,8 @@ class LSGNData(object):
             num_mentions += len(e["coref"])
           cluster_id_offset += len(example["clusters"])
           num_sentences += len(doc_examples[-1])
-        print ("Load {} training documents with {} sentences, {} clusters, and {} mentions.".format(
-            doc_id, num_sentences, cluster_id_offset, num_mentions))
+        print(("Load {} training documents with {} sentences, {} clusters, and {} mentions.".format(
+            doc_id, num_sentences, cluster_id_offset, num_mentions)))
 
         tensor_names = self.input_names + self.label_names
         batch_buffer = []
@@ -176,7 +176,7 @@ class LSGNData(object):
               sentence_offset = random.randint(0, num_sents - max_training_sents)
               tensor_examples = tensor_examples[sentence_offset:sentence_offset + max_training_sents]
             batched_tensor_examples = [pad_batch_tensors(tensor_examples, tn) for tn in tensor_names]
-            feed_dict = dict(zip(self.queue_input_tensors, batched_tensor_examples))
+            feed_dict = dict(list(zip(self.queue_input_tensors, batched_tensor_examples)))
             session.run(self.enqueue_op, feed_dict=feed_dict)
           elif adaptive_batching:
             for tensor_example in tensor_examples:
@@ -184,7 +184,7 @@ class LSGNData(object):
               if len(batch_buffer) >= self.config["batch_size"] or (
                   num_tokens_in_batch + num_tokens > self.config["max_tokens_per_batch"]):
                 batched_tensor_examples = [pad_batch_tensors(batch_buffer, tn) for tn in tensor_names]
-                feed_dict = dict(zip(self.queue_input_tensors, batched_tensor_examples))
+                feed_dict = dict(list(zip(self.queue_input_tensors, batched_tensor_examples)))
                 session.run(self.enqueue_op, feed_dict=feed_dict)
                 batch_buffer = []
                 num_tokens_in_batch = 0
@@ -192,13 +192,13 @@ class LSGNData(object):
               num_tokens_in_batch += num_tokens
           else:
             for tensor_example in tensor_examples:
-              feed_dict = dict(zip(self.queue_input_tensors, [tensor_example[tn] for tn in tensor_names]))
+              feed_dict = dict(list(zip(self.queue_input_tensors, [tensor_example[tn] for tn in tensor_names])))
               session.run(self.enqueue_op, feed_dict=feed_dict)
         # Clear out the batch buffer after each epoch to avoid the situation where the first document
         # in the next batch is the same one as the last document in the previous batch.
         if len(batch_buffer) > 0:
           batched_tensor_examples = [pad_batch_tensors(batch_buffer, tn) for tn in tensor_names]
-          feed_dict = dict(zip(self.queue_input_tensors, batched_tensor_examples))
+          feed_dict = dict(list(zip(self.queue_input_tensors, batched_tensor_examples)))
           session.run(self.enqueue_op, feed_dict=feed_dict)
 
     enqueue_thread = threading.Thread(target=_enqueue_loop)
@@ -345,6 +345,6 @@ class LSGNData(object):
       eval_tensors.append(doc_tensors)
       eval_data.extend(srl_eval_utils.split_example_for_eval(example))
       coref_eval_data.append(example)
-    print("Loaded {} eval examples.".format(len(eval_data)))
+    print(("Loaded {} eval examples.".format(len(eval_data))))
     return eval_data, eval_tensors, coref_eval_data
  

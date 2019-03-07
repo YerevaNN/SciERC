@@ -16,18 +16,18 @@ import util
 
 
 if __name__ == "__main__":
-  print 'start'
+  print('start')
   if len(sys.argv) > 1:
     name = sys.argv[1]
   else:
     name = os.environ["EXP"]
   config = util.get_config("experiments.conf")[name]
-  print 'config'
+  print('config')
   report_frequency = config["report_frequency"]
 
   config["log_dir"] = util.mkdirs(os.path.join(config["log_root"], name))
   util.print_config(config)
-  print os.environ
+  print((os.environ))
   # if "GPU" in os.environ:
   #   gpus = [int(g) for g in os.environ["GPU"].split(",")]
   #   util.set_gpus(*gpus)
@@ -65,7 +65,7 @@ if __name__ == "__main__":
         steps_per_second = tf_global_step / total_time
 
         average_loss = accumulated_loss / report_frequency
-        print "[{}] loss={:.2f}, steps/s={:.2f}".format(tf_global_step, average_loss, steps_per_second)
+        print(("[{}] loss={:.2f}, steps/s={:.2f}".format(tf_global_step, average_loss, steps_per_second)))
         writer.add_summary(util.make_summary({"loss": average_loss}), tf_global_step)
         accumulated_loss = 0.0
 

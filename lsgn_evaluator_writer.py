@@ -70,16 +70,16 @@ class LSGNEvaluator(object):
     srl_sent_id = 0
 
     for i, doc_tensors in enumerate(self.eval_tensors):
-      feed_dict = dict(zip(
+      feed_dict = dict(list(zip(
           data.input_tensors,
-          [pad_batch_tensors(doc_tensors, tn) for tn in data.input_names + data.label_names]))
+          [pad_batch_tensors(doc_tensors, tn) for tn in data.input_names + data.label_names])))
       predict_names = []
       for tn in data.predict_names:
         if tn in predictions:
           predict_names.append(tn)
       predict_tensors = [predictions[tn] for tn in predict_names] + [loss]
       predict_tensors = session.run(predict_tensors, feed_dict=feed_dict)
-      predict_dict = dict(zip(predict_names + ["loss"], predict_tensors))
+      predict_dict = dict(list(zip(predict_names + ["loss"], predict_tensors)))
       doc_key = doc_tensors[0]['doc_key']
       json_output = {'doc_key':doc_key}
       doc_size = len(doc_tensors)
@@ -133,11 +133,11 @@ class LSGNEvaluator(object):
 
       total_loss += predict_dict["loss"]
       if (i + 1) % 50 == 0:
-        print ("Evaluated {}/{} documents.".format(i + 1, len(self.coref_eval_data)))
+        print(("Evaluated {}/{} documents.".format(i + 1, len(self.coref_eval_data))))
       json_data.append(json_output)
     debug_printer.close()
     outfn = self.config["output_path"]
-    print 'writing to ' + outfn
+    print('writing to ' + outfn)
     with open(outfn,'w') as f:
       for json_line in json_data:
         f.write(json.dumps(json_line, cls=MyEncoder))

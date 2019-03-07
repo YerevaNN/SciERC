@@ -35,7 +35,7 @@ def ReadJsonACL(senfn, docs):
             try:
                 year =int(year)
             except:
-                print docs_sent[i]['doc_key']
+                print(docs_sent[i]['doc_key'])
                 return
             docs[docs_sent[i]['doc_key']] = {'ner': docs_sent[i]['ner'], 'relation': docs_sent[i]['relations'], 'coref':[], 'sentences': docs_sent[i]['sentences'], 'year': year, 'venue':'ACL'}
 
@@ -180,7 +180,7 @@ def BuildKG(doc):
 
     
 def sort_dict(dictionary):
-    sorted_dct = sorted(dictionary.items(), key=itemgetter(1),reverse=True)
+    sorted_dct = sorted(list(dictionary.items()), key=itemgetter(1),reverse=True)
     return sorted_dct
 
 
@@ -383,7 +383,7 @@ def topNER(docs, aspects='None', aspect_values = 'None'):
     for ner_type in ner_rankdir:
         ner_rankdir[ner_type] = sort_dict(ner_rankdir[ner_type])
 
-    print venue_set
+    print(venue_set)
     return ner_rankdir
 
 def CombineDir(dct):
@@ -682,22 +682,22 @@ def CountMissingNER(docs):
             elif 'partial' in rel[1][0]:
                 overlapnum += 1
             elif rel[1][0] not in ner_labels:
-                print rel[1][0]
+                print(rel[1][0])
             if 'None' in rel[1][1]:
                 nonnum += 1
             elif 'partial' in rel[1][1]:
                 overlapnum += 1
             elif rel[1][1] not in ner_labels:
-                print rel[1][1]
+                print(rel[1][1])
             # if rel[1][0] in ner_labels:
             #     if rel[1][0] == 'Task':
             #         print rel[2][0]
             allnum += 2
-    print allnum
-    print overlapnum
-    print nonnum
-    print float(nonnum)/allnum
-    print float(overlapnum)/allnum
+    print(allnum)
+    print(overlapnum)
+    print(nonnum)
+    print(float(nonnum)/allnum)
+    print(float(overlapnum)/allnum)
 
 def PrintK(dictionary, aspect, k , name):
     strings = []
