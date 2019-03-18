@@ -192,7 +192,9 @@ class EmbeddingDictionary(object):
             vocab_size = int(splits[0])
             assert int(splits[1]) == self.size
           else:
-            #if len(splits) != self.size + 1: continue
+            if len(splits) != self.size + 1: 
+                # sometimes there is a space in the word (glove.txt)
+                continue
             assert len(splits) == self.size + 1
             word = splits[0]
             embedding = np.array([float(s) for s in splits[1:]])
