@@ -15,8 +15,8 @@ def get_char_vocab(input_filenames, output_filename):
   vocab = sorted(list(vocab))
   with open(output_filename, "w") as f:
     for char in vocab:
-      f.write(u"{}\n".format(char).encode("utf8"))
-  print("Wrote {} characters to {}".format(len(vocab), output_filename))
+      f.write("{}\n".format(char).encode("utf8"))
+  print(("Wrote {} characters to {}".format(len(vocab), output_filename)))
 
 
 get_char_vocab(["./data/processed_data/json/{}.json".format(partition) for partition in ("train", "dev", "test")], "char_vocab.english.txt")
