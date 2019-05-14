@@ -19,9 +19,9 @@ if __name__ == "__main__":
   total_lines = 0
   kept_lines = 0
   out_filename = sys.argv[2]
-  with open(sys.argv[1]) as in_file:
-    with open(out_filename, "w") as out_file:
-      for line in in_file.readlines():
+  with open(sys.argv[1], 'r', encoding='utf-8') as in_file:
+    with open(out_filename, "w", encoding='utf-8') as out_file:
+      for line in in_file:
         total_lines += 1
         word = line.split()[0]
         if word in words_to_keep:
