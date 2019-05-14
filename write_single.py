@@ -19,7 +19,7 @@ if __name__ == "__main__":
   #if "GPU" in os.environ:
   #  util.set_gpus(int(os.environ["GPU"]))
   #else:
-  #  util.set_gpus()
+  util.set_gpus()
 
   if len(sys.argv) > 1:
     name = sys.argv[1]

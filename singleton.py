@@ -6,6 +6,7 @@ sys.path.append(os.getcwd())
 import json
 import time
 import random
+# import argparse
 
 import numpy as np
 import tensorflow as tf
@@ -16,11 +17,18 @@ import util
 
 
 if __name__ == "__main__":
+#  parser = argparse.ArgumentParser()
+#  parser.add_argument("--train_path", type=str, help="path to training json",
+#                      default=None)
+#  parser.add_argument("name", type=str, required=True,
+#                      help="name of the experiment", default=None) 
+#  args = parser.parse_args()
   print('start')
   if len(sys.argv) > 1:
     name = sys.argv[1]
   else:
     name = os.environ["EXP"]
+  
   config = util.get_config("experiments.conf")[name]
   print('config')
   report_frequency = config["report_frequency"]
@@ -53,6 +61,7 @@ if __name__ == "__main__":
   # The supervisor takes care of session initialization, restoring from
   # a checkpoint, and closing when done or an error occurs.
   with sv.managed_session() as session:
+    writer.add_graph(session.graph)
     data.start_enqueue_thread(session)
     accumulated_loss = 0.0
     initial_time = time.time()
