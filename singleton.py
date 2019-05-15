@@ -32,7 +32,7 @@ if __name__ == "__main__":
   #   gpus = [int(g) for g in os.environ["GPU"].split(",")]
   #   util.set_gpus(*gpus)
   # else:
-  util.set_gpus(0)
+  util.set_gpus(config['gpu_id'])
 
   data = LSGNData(config)
   model = SRLModel(data, config)
