@@ -46,10 +46,10 @@ def lstm_contextualize(text_emb, text_len, config, lstm_dropout):
   num_sentences = tf.shape(text_emb)[0]
   current_inputs = text_emb  # [num_sentences, max_sentence_length, emb]
   for layer in range(config["contextualization_layers"]):
-    with tf.variable_scope("layer_{}".format(layer)):
-      with tf.variable_scope("fw_cell"):
+    with tf.variable_scope("layer_{}".format(layer), reuse=tf.AUTO_REUSE):
+      with tf.variable_scope("fw_cell", reuse=tf.AUTO_REUSE):
         cell_fw = util.CustomLSTMCell(config["contextualization_size"], num_sentences, lstm_dropout)
-      with tf.variable_scope("bw_cell"):
+      with tf.variable_scope("bw_cell", reuse=tf.AUTO_REUSE):
         cell_bw = util.CustomLSTMCell(config["contextualization_size"], num_sentences, lstm_dropout)
       state_fw = tf.contrib.rnn.LSTMStateTuple(tf.tile(cell_fw.initial_state.c, [num_sentences, 1]),
                                                tf.tile(cell_fw.initial_state.h, [num_sentences, 1]))
@@ -120,6 +120,8 @@ def get_span_emb(head_emb, context_outputs, span_starts, span_ends, config, drop
   max_arg_width = config["max_arg_width"]
   num_heads = config["num_attention_heads"]
 
+  tf.get_variable_scope()._reuse = tf.AUTO_REUSE
+
   if config["use_features"]:
     span_width_index = span_width - 1  # [num_spans]
     span_width_emb = tf.gather(
@@ -140,7 +142,7 @@ def get_span_emb(head_emb, context_outputs, span_starts, span_ends, config, drop
     span_text_emb = tf.gather(head_emb, span_indices)  # [num_spans, max_arg_width, emb]
     span_indices_log_mask = tf.log(
         tf.sequence_mask(span_width, max_arg_width, dtype=tf.float32)) # [num_spans, max_arg_width]
-    with tf.variable_scope("head_scores"):
+    with tf.variable_scope("head_scores", reuse=tf.AUTO_REUSE):
       head_scores = util.projection(context_outputs, num_heads)  # [num_words, num_heads]
     span_attention = tf.nn.softmax(
       tf.gather(head_scores, span_indices) + tf.expand_dims(span_indices_log_mask, 2),
@@ -157,7 +159,7 @@ def get_unary_scores(span_emb, config, dropout, num_labels = 1, name="span_score
   Args:
     span_emb: Tensor of [num_sentences, num_spans, emb].
   """
-  with tf.variable_scope(name):
+  with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
     scores = util.ffnn(span_emb, config["ffnn_depth"], config["ffnn_size"], num_labels,
                        dropout)  # [num_sentences, num_spans, num_labels] or [k, num_labels]
   if num_labels == 1:
